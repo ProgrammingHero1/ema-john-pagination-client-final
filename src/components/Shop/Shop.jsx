@@ -8,9 +8,10 @@ import { Link, useLoaderData } from 'react-router-dom';
 const Shop = () => {
     const [products, setProducts] = useState([]);
     const [cart, setCart] = useState([]);
+    const [currentPage, setCurrentPage] = useState(0);
     const [itemsPerPage, setItemsPerPage] = useState(10);
     const { count } = useLoaderData();
-    
+
     const numberOfPages = Math.ceil(count / itemsPerPage);
 
     // const pages = []
@@ -22,8 +23,8 @@ const Shop = () => {
 
     /**
      * DONE 1: get the total number of products
-     * TODO 2: number of items per page dynamic
-     * 
+     * Done 2: number of items per page dynamic
+     * TODO 3: get the current page
     */
 
     useEffect(() => {
@@ -78,11 +79,23 @@ const Shop = () => {
         deleteShoppingCart();
     }
 
-    const handleItemsPerPage = e =>{
-        
+    const handleItemsPerPage = e => {
         const val = parseInt(e.target.value);
         console.log(val);
-        setItemsPerPage(val)
+        setItemsPerPage(val);
+        setCurrentPage(0);
+    }
+
+    const handlePrevPage = () => {
+        if (currentPage > 0) {
+            setCurrentPage(currentPage - 1);
+        }
+    }
+
+    const handleNextPage = () =>{
+        if(currentPage < pages.length -1){
+            setCurrentPage(currentPage + 1);
+        }
     }
 
     return (
@@ -107,9 +120,16 @@ const Shop = () => {
                 </Cart>
             </div>
             <div className='pagination'>
+                <p>Current page: {currentPage}</p>
+                <button onClick={handlePrevPage}>Prev</button>
                 {
-                    pages.map(page => <button key={page}>{page}</button>)
+                    pages.map(page => <button
+                        className={currentPage === page && 'selected'}
+                        onClick={() => setCurrentPage(page)}
+                        key={page}
+                    >{page}</button>)
                 }
+                <button onClick={handleNextPage}>Next</button>
                 <select value={itemsPerPage} onChange={handleItemsPerPage} name="" id="">
                     <option value="5">5</option>
                     <option value="10">10</option>
